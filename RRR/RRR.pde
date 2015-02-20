@@ -17,13 +17,12 @@ PrintWriter output;
 PFont myFont; 
 boolean settedup=false;
 
-void setup()
-{ 
+void setup() { 
   int bars=75;
   frameRate(10);
   //myFont = createFont("TimesNewRomanPSMT",16);
   //textFont(myFont);
-  size(5*bars,5*bars);
+  size(5*bars, 5*bars);
   myport = new RRport(this);
   myparser = new RRparser();
   rrdisplay = new RRdisplay();
@@ -36,8 +35,8 @@ void setup()
   output = createWriter("logfiles"+sdf.format(now)+".txt");
 
 
-  fill(10,10,10);
-  rect(0,0,width,height);
+  fill(10, 10, 10);
+  rect(0, 0, width, height);
   settedup=true;
 }
 
@@ -46,6 +45,7 @@ int RRstd = 50;
 
 int time = 0;
 int count =0;
+
 void draw() {
   count++;
   count=count%10;
@@ -74,7 +74,7 @@ void serialEvent(Serial p) {
       println();
       rrdisplay.next(RR);
       hrvdisplay.next(RRstd);
-      circledisplay.next(RRavg,RR);
+      circledisplay.next(RRavg, RR);
       if (RRDISPLAY==true) rrdisplay.step();
       if (HRVDISPLAY==true) hrvdisplay.step();
       if (CIRCLEDISPLAY==true) circledisplay.step();
@@ -96,7 +96,5 @@ public void stop() {
 
 void keyPressed() {
 }
-
-
 
 

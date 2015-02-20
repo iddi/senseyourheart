@@ -3,13 +3,14 @@ class RRparser {
   int avg = 1000;
   private int tmp=0;
   private boolean flag;
+  
   boolean event() {
     if (flag) {
       flag = false; 
       return true;
-    }  
-    else return false;
+    } else return false;
   }    
+  
   void step() {
     int b;
     //print('.');
@@ -37,6 +38,7 @@ class RRparser {
       if (b!=10&&b!=13)   tmp=16*tmp + hex2int(b); //msb first
     }
   }
+  
   private int hex2int(int c) {
     if (c=='0') return 0;  
     if (c=='1') return 1;  
@@ -57,5 +59,6 @@ class RRparser {
     println("!@#$%"); //TZT ERUIT
     return -1;
   }
+  
 }// RRparser
 

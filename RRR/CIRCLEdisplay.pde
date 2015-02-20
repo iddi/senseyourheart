@@ -6,6 +6,7 @@ class CIRCLEdisplay {
   int ybuffer[];
   int pbuffer[];
   int fbuffer[]; //foppen, IE DECREASING COUNTER, "BUDGET"TO GO
+
   CIRCLEdisplay() {
     prevRR=1000;
     cnt=0;
@@ -14,13 +15,14 @@ class CIRCLEdisplay {
     ybuffer = new int[SIZE];
     pbuffer = new int[SIZE];
     fbuffer = new int[SIZE];
-    for (int i=0;i<SIZE;i++) {
+    for (int i=0; i<SIZE; i++) {
       xbuffer[i]=width/2;
       ybuffer[i]=height/2;
       pbuffer[i]=0;
       fbuffer[i]=0;
     }
   }
+
   void next(int RRavg, int RR) {
     int x=(RR - RRavg) / 3;
     int y=-(prevRR - RRavg) / 3;
@@ -34,18 +36,21 @@ class CIRCLEdisplay {
     fbuffer[cnt]=SIZE/2;
     cnt = (cnt+1)%(SIZE);
   }
+
   void step() {
     doforgetfulness();
     doblocksandlines();
   }
+
   private void doforgetfulness() {
     int Pfactor=90;
-    for (int i=0;i<SIZE;i++) {
+    for (int i=0; i<SIZE; i++) {
       if (fbuffer[i]>0) 
         pbuffer[i]=Pfactor*pbuffer[i]/100;
       fbuffer[i]--;
     }
   }    
+
   private void doblock(int X, int Y, int P) {
     int R=255; 
     int G=25; 
@@ -54,10 +59,11 @@ class CIRCLEdisplay {
     G=(P*G)/100; 
     B=(P*B)/100;
     strokeWeight(1); 
-    stroke(R/2,G/2,B/2); 
-    fill(R,G,B); 
-    rect(X,Y,6,6);//block is 7 wide
+    stroke(R/2, G/2, B/2); 
+    fill(R, G, B); 
+    rect(X, Y, 6, 6);//block is 7 wide
   }
+
   private void doline(int X, int Y, int PX, int PY, int P) {
     int Hmax = 160;
     //P is presence 0..100% 
@@ -68,25 +74,28 @@ class CIRCLEdisplay {
     G=(P*G)/100; 
     B=(P*B)/100;
     strokeWeight(1); 
-    stroke(R,G,B); 
-    line(X+2,Y+2,PX+2,PY+2);
+    stroke(R, G, B); 
+    line(X+2, Y+2, PX+2, PY+2);
   }
+
   private int prev(int i) {
     if (i>0) return i-1;
     else return SIZE-1;
   }
+
   private int nxt(int i) {
     if (i<SIZE-1) return i+1;
     else return 0;
   }
+
   private void doblocksandlines() {
     int j=cnt; 
-    for (int i=0;i<SIZE;i++) {
+    for (int i=0; i<SIZE; i++) {
       j=nxt(j);//write newest last
       if (fbuffer[j]>0)
-        doblock(xbuffer[j],ybuffer[j],pbuffer[j]);
+        doblock(xbuffer[j], ybuffer[j], pbuffer[j]);
       if (fbuffer[j]>0 && fbuffer[prev(j)]>0)
-        doline(xbuffer[j],ybuffer[j],xbuffer[prev(j)],ybuffer[prev(j)],pbuffer[j]);
+        doline(xbuffer[j], ybuffer[j], xbuffer[prev(j)], ybuffer[prev(j)], pbuffer[j]);
     }
   }
 }
