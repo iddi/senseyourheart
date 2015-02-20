@@ -16,4 +16,4 @@ We cooperate with a network of partners such as the SPS group at the department 
 
 ## Education
 
-The theory and the PPG tool are also used in our education program at TU/e ID, for example in a module called [Sense Your Heart](https://brain.idstudents.nl/DB214)[ designed by Dr. Wei Chen. A few of the results can be seen on Dr. Jun Hu's [Sense Your Heart page](http://www.drhu.eu/2011/04/sense-your-heart/).
+The theory and the PPG tool are also used in our education program at TU/e ID, for example in a module called [Sense Your Heart](https://brain.idstudents.nl/DB214) [designed by Dr. Wei Chen. A few of the results can be seen on Dr. Jun Hu's [Sense Your Heart page](http://www.drhu.eu/2011/04/sense-your-heart/).
