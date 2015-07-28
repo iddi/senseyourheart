@@ -6,8 +6,17 @@ boolean RRDISPLAY=true;
 boolean HRVDISPLAY=true;
 boolean CIRCLEDISPLAY=true;
 
+// Use a Bluetooth LE sensor, e.g. Polar H7?
+// Assumes Linux/OS X, Node.js and `npm install -g lub-dub`.
+// If false, use SensorArduino.
+boolean USEBLE=false;
+
+String UUID="ea53284303a740b68702ceb6259ebf2a";
+
 RRport myport;
 RRparser myparser;
+
+LubDub mylubdub;
 
 RRdisplay rrdisplay;
 HRVdisplay hrvdisplay;
@@ -23,8 +32,12 @@ void setup() {
   //myFont = createFont("TimesNewRomanPSMT",16);
   //textFont(myFont);
   size(5*bars, 5*bars);
-  myport = new RRport(this);
-  myparser = new RRparser();
+  if (USEBLE) {
+    mylubdub = new LubDub(UUID, new Handler());
+  } else {
+    myport = new RRport(this);
+    myparser = new RRparser();
+  }
   rrdisplay = new RRdisplay();
   hrvdisplay = new HRVdisplay();
   circledisplay = new CIRCLEdisplay();
@@ -53,6 +66,30 @@ void draw() {
   time++;
 }
 
+void handleRR(int RR) {
+  print(" RR="); 
+  print(RR); 
+  output.println(RR);
+  RRavg = int((23 * RRavg + 1*RR)/24); 
+  print(" AVG="); 
+  print(RRavg);
+  RRstd = int((15.0 * RRstd + abs(RR - RRavg)) / 16.0); 
+  print(" STD="); 
+  print(RRstd);//niet met kwadraat ivm outlyers
+  println();
+  rrdisplay.next(RR);
+  hrvdisplay.next(RRstd);
+  circledisplay.next(RRavg, RR);
+  if (RRDISPLAY==true) rrdisplay.step();
+  if (HRVDISPLAY==true) hrvdisplay.step();
+  if (CIRCLEDISPLAY==true) circledisplay.step();
+
+  //float BTopt = 15.00; //assumed resonant breathing rate in seconds
+  //int advice = int(BTopt*1000/RRavg); //idem in heart beats
+  //fill(30); stroke(0); rect(0,height-16,16,2*16);
+  //fill(150); text(Integer.toString(advice),0, height);
+}
+
 void serialEvent(Serial p) { 
   if (settedup) {
     //print("!");
@@ -61,29 +98,15 @@ void serialEvent(Serial p) {
     myparser.step();
     //if (time/10 > 120) stop();
     if (myparser.event()) {
-      int RR = myparser.val; 
-      print(" RR="); 
-      print(RR); 
-      output.println(RR);
-      RRavg = int((23 * RRavg + 1*RR)/24); 
-      print(" AVG="); 
-      print(RRavg);
-      RRstd = int((15.0 * RRstd + abs(RR - RRavg)) / 16.0); 
-      print(" STD="); 
-      print(RRstd);//niet met kwadraat ivm outlyers
-      println();
-      rrdisplay.next(RR);
-      hrvdisplay.next(RRstd);
-      circledisplay.next(RRavg, RR);
-      if (RRDISPLAY==true) rrdisplay.step();
-      if (HRVDISPLAY==true) hrvdisplay.step();
-      if (CIRCLEDISPLAY==true) circledisplay.step();
-
-      //float BTopt = 15.00; //assumed resonant breathing rate in seconds
-      //int advice = int(BTopt*1000/RRavg); //idem in heart beats
-      //fill(30); stroke(0); rect(0,height-16,16,2*16);
-      //fill(150); text(Integer.toString(advice),0, height);
+      int RR = myparser.val;
+      handleRR(RR); 
     }
+  }
+}
+
+class Handler implements LubDubHandler {
+  void handle(int RR) {
+    handleRR(Math.round(RR / 1.024));
   }
 }
 
